@@ -12,11 +12,8 @@ app.use(bodyParser.json());
 app.use("/product", productRouter);
 
 
-let mongoUrl = process.env.MONGO_URL || " mongodb://127.0.0.1:27017/mernevaldb";
-mongoose.connect(mongoUrl, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-})
+let mongoUrl = process.env.MONGO_URL || "mongodb://localhost:27017";
+mongoose.connect(mongoUrl)
 .then(() => console.log('Connected to MongoDB'))
 .catch((err) => console.error(' MongoDB connection error:', err));
 
