@@ -1,44 +1,66 @@
+// const jwt = require('jsonwebtoken');
+
+// const tokenSecret = process.env.TOKEN_SECRET 
+// module.exports = (req, res, next) => {
+
+//     console.log("req.headers",req.headers)
+//     console.log("req.header",req.header)
+//     const token = req.headers["x-access-token"]
+
+//     if(!token) {
+//         return res.status(403).json({success: false, msg: "No token found"});
+//     }
+
+//     try {
+//         const decode = jwt.verify(token, tokenSecret);
+
+//         req.userId = decode.userId;
+//         next();const jwt = require('jsonwebtoken');
+
+// const tokenSecret = process.env.TOKEN_SECRET 
+// module.exports = (req, res, next) => {
+
+//     console.log("req.headers",req.headers)
+//     console.log("req.header",req.header)
+//     const token = req.headers["x-access-token"]
+
+//     if(!token) {
+//         return res.status(403).json({success: false, msg: "No token found"});
+//     }
+
+//     try {
+//         const decode = jwt.verify(token, tokenSecret);
+
+//         req.userId = decode.userId;
+//         next();
+//     } catch(err) {
+//         return res.status(401).json({success: false,message: "Token is expired or corrupt"});
+//     }
+// }
+
+//     } catch(err) {
+//         return res.status(401).json({success: false,message: "Token is expired or corrupt"});
+//     }
+// }
+
+
 const jwt = require('jsonwebtoken');
 
-const tokenSecret = process.env.TOKEN_SECRET 
+const tokenSecret = process.env.TOKEN_SECRET;
+
 module.exports = (req, res, next) => {
+  console.log("req.headers", req.headers);
+  const token = req.headers["x-access-token"];
 
-    console.log("req.headers",req.headers)
-    console.log("req.header",req.header)
-    const token = req.headers["x-access-token"]
+  if (!token) {
+    return res.status(403).json({ success: false, msg: "No token found" });
+  }
 
-    if(!token) {
-        return res.status(403).json({success: false, msg: "No token found"});
-    }
-
-    try {
-        const decode = jwt.verify(token, tokenSecret);
-
-        req.userId = decode.userId;
-        next();const jwt = require('jsonwebtoken');
-
-const tokenSecret = process.env.TOKEN_SECRET 
-module.exports = (req, res, next) => {
-
-    console.log("req.headers",req.headers)
-    console.log("req.header",req.header)
-    const token = req.headers["x-access-token"]
-
-    if(!token) {
-        return res.status(403).json({success: false, msg: "No token found"});
-    }
-
-    try {
-        const decode = jwt.verify(token, tokenSecret);
-
-        req.userId = decode.userId;
-        next();
-    } catch(err) {
-        return res.status(401).json({success: false,message: "Token is expired or corrupt"});
-    }
-}
-
-    } catch(err) {
-        return res.status(401).json({success: false,message: "Token is expired or corrupt"});
-    }
-}
+  try {
+    const decode = jwt.verify(token, tokenSecret);
+    req.userId = decode.userId;
+    next();
+  } catch (err) {
+    return res.status(401).json({ success: false, message: "Token is expired or corrupt" });
+  }
+};

@@ -1,71 +1,53 @@
-const { error } = require("console");
 
-const product=[
-    {
-    name:"led",
-    category:"electronics",
-    price:"20000",
-    discount:"20%"},
+const Product = require("./product.model");
 
-    {
-        name:"pants",
-        category:"clothes",
-        price:"1000",
-        discount:"10%"},
-    {
-        name:"speakers",
-        category:"electronics",
-        price:"22000",
-        discount:"20%"}
-]
+const getAllProducts = async (req, res) => {
+  try {
+    let products = await Product.find();
+    res.status(200).json({ success: true, data: products });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
 
-
-let getallproducts=((req,res)=>{
-    res.json({product}).status(200)
-});
-
-
-
-let addproduct=((req,res)=>{
-      try {
-        let body = req.body;
-        let error= validateproduct(body);
-        if(error){
-            return res.json({ success: true, message: "product is required" }).status(400);
-        }
-
-        products.push(body);
-        res.status(200).json({ success: true, meesage: "Products added " });
-      } catch (err) {
-        res.status(500).json({ success: false, message: "Internal server error" });
-      }
-  
-});
-
-let deleteproduct=((req,res)=>{
-    let productId=req.params.id;
-    let product=products.find((p)=>{
-        return p.id==productId
-    })
-    if(!product){
-        return res.status(404).json({success:false,message:"product not found"})
+const addProduct = async (req, res) => {
+  try {
+    let body = req.body;
+    let error = validateProduct(body);
+    if (error) {
+      return res.status(400).json({ success: false, message: error.message });
     }
-    products=products.filter((p)=>{
-        return p.id!=productId
-    })
-    res.status(200).json({success:true,message:"Product deleted",data:product})
-})
 
+    let product = await Product.create(body);
+    res.status(200).json({ success: true, message: "Product added", data: product });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
 
-let validateproduct= (product)=>{
-    if(!product) {
-        throw new Error("Please pass a valid product")
+const deleteProduct = async (req, res) => {
+  try {
+    let productId = req.params.id;
+    let product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).json({ success: false, message: "Product not found" });
     }
-    if(!product.name || product.category || product.price || product.discount){
-        return new Error("Product is req")
-    }
-}
 
+    await Product.findByIdAndDelete(productId);
+    res.status(200).json({ success: true, message: "Product deleted", data: product });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
 
-module.exports={getallproducts, addproduct, deleteproduct, validateproduct};
+const validateProduct = (product) => {
+  if (!product) {
+    return new Error("Please pass a valid product");
+  }
+  if (!product.name || !product.category || !product.price || !product.discount) {
+    return new Error("All product fields are required");
+  }
+  return null;
+};
 
+module.exports = { getAllProducts, addProduct, deleteProduct };
